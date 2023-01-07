@@ -36,7 +36,7 @@ class Migration_XXX_example_name extends \Phphleb\Migration\Src\BaseMigrate
 {
    public function run()
    {
-      $this->addSql("INSERT INTO first_table (cell_name) values ('example_value')");
+      $this->addSql("INSERT INTO table_name (cell_name) VALUES ('example_value')");
    }
 }
 

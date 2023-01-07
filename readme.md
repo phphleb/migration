@@ -41,7 +41,7 @@ class Migration_XXX_example_name extends \Phphleb\Migration\Src\BaseMigrate
 
 ```
 
-Также есть команда для выполнение миграций:
+Также есть команда для выполнения миграций:
 
 ```bash
 $ php console migration/run

@@ -11,18 +11,23 @@ abstract class BaseMigrate
     
     /** @internal  */
     protected string $tableName;
+
+    /** @internal  */
+    protected string $directory;
     
     /** @internal  */
     private array $sql = [];
 
-    /** @param string|null $dbType
+    /**
+     * @param string|null $dbType
      * @param string $tableName
-     * @internal
+     * @param string $dir
      */
-    public function __construct(string $dbType = null, $tableName = 'migrations')
+    public function __construct(string $dbType = null, $tableName = 'migrations', string $dir = HLEB_GLOBAL_DIRECTORY . DIRECTORY_SEPARATOR . 'migrations')
     {
         $this->dbType = $dbType;
         $this->tableName = $tableName;
+        $this->directory = rtrim($dir, '\\/ ');
     }
     
     /** @internal  */

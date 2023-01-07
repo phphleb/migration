@@ -11,13 +11,12 @@ class Migration extends BaseMigrate
 {
     public function run(string $dir = HLEB_GLOBAL_DIRECTORY . DIRECTORY_SEPARATOR . 'migrations'): array
     {
-        DB::dbQuery("CREATE TABLE IF NOT EXISTS `$this->tableName` (`index` bigint (15) NOT NULL, `datecreate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP)", $this->dbType);
-
-        $rows = DB::run("SELECT * FROM `$this->tableName` ORDER BY `index` ASC", [], $this->dbType)->fetchAll(\PDO::FETCH_ASSOC);
+        DB::dbQuery("CREATE TABLE IF NOT EXISTS {$this->tableName} (label bigint NOT NULL, datecreate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP)", $this->dbType);
+        $rows = DB::run("SELECT * FROM {$this->tableName} ORDER BY label ASC", [], $this->dbType)->fetchAll(\PDO::FETCH_ASSOC);
         $list = [];
         $result = [];
         foreach ($rows as $key => $row) {
-            $list[(int)$row['index']] = [];
+            $list[(int)$row['label']] = [];
         }
 
         $files = scandir($dir);
@@ -29,7 +28,7 @@ class Migration extends BaseMigrate
                     if (empty($parts[1]) || !is_numeric($parts[1]) || $parts[0] !== 'Migration' || count($parts) < 3) {
                         throw new MigrateException("Wrong migration name: $className" );
                     }
-                    $index = (int)$parts[1];                    
+                    $index = (int)$parts[1];
                     if ($index && !isset($list[$index])) {
                         require $dir . DIRECTORY_SEPARATOR . $file;
                         /** @var  BaseMigrate $object */
@@ -58,7 +57,7 @@ class Migration extends BaseMigrate
                 $result[] = $item['name'];
                 foreach ($item['sql'] as $query) {
                     $connection->prepare($query)->execute();
-                    $connection->prepare("INSERT INTO `$this->tableName` (`index`) VALUES (?)")->execute([$item['index']]);
+                    $connection->prepare("INSERT INTO {$this->tableName} (label) VALUES (?)")->execute([$item['index']]);
                 }
             }
         } catch (\PDOException $e) {

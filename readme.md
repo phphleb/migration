@@ -1,4 +1,4 @@
-#Базовые миграции для фреймворка HLEB
+# Базовые миграции для фреймворка HLEB
 Эти миграции реализуют минимальный набор стандартных действий, основное их предназначение - выполнить заготовленные запросы и зафиксировать в базе данных факт их выполнения, предотвращая повторное.
 Для этого во фреймворке должна быть подключена база данных.
 
@@ -65,4 +65,4 @@ $ composer dump-autoload
 -----------------------------------
 
 
-[![License: MIT](https://img.shields.io/badge/License-MIT%20(Free)-brightgreen.svg)](https://github.com/phphleb/draft/blob/main/LICENSE) ![PHP](https://img.shields.io/badge/PHP-^7.4.0-blue) ![PHP](https://img.shields.io/badge/PHP-8-blue)
+[![License: MIT](https://img.shields.io/badge/License-MIT%20(Free)-brightgreen.svg)](https://github.com/phphleb/draft/blob/main/LICENSE) ![PHP](https://img.shields.io/badge/PHP-^7.1.0-blue) ![PHP](https://img.shields.io/badge/PHP-8-blue)

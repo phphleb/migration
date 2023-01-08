@@ -59,9 +59,9 @@ class Migration extends BaseMigrate
                 foreach ($list as $item) {
                     $result[] = $item['name'];
                     foreach ($item['sql'] as $query) {
-                            $connection->prepare($query)->execute();
-                            $connection->prepare("INSERT INTO {$this->tableName} (label) VALUES (?)")->execute([$item['index']]);
+                        $connection->prepare($query)->execute();
                     }
+                    $connection->prepare("INSERT INTO {$this->tableName} (label) VALUES (?)")->execute([$item['index']]);
                 }
             } catch (\PDOException $e) {
                 $connection->rollBack();

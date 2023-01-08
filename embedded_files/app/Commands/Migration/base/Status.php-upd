@@ -36,7 +36,7 @@ class Status extends \Hleb\Scheme\App\Commands\MainTask
         try {
             $migrations = (new Migration())->status();
             if ($migrations) {
-               for ($i = 1; $i =< count($migrations); $i++) {
+               for ($i = 1; $i <= count($migrations); $i++) {
                   echo PHP_EOL . $i . '. ' . $migrations[$i];
                }
                 echo PHP_EOL;

@@ -29,7 +29,7 @@ class Status extends \Hleb\Scheme\App\Commands\MainTask
 {
     // php console migration/status
 
-    const DESCRIPTION = "Running migrations";
+    const DESCRIPTION = "Migration status";
 
     protected function execute(): void
     {

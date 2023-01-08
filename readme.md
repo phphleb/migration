@@ -45,7 +45,7 @@ class Migration_XXX_example_name extends \Phphleb\Migration\Src\StandardMigratio
 
 
 ```
-Текущее название базы данных можно получить из переменной `$this->dbName`.
+Текущее название базы данных можно получить из переменной _$this->dbName_.
 
 Также есть команда для выполнения миграций:
 

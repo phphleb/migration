@@ -25,18 +25,27 @@ namespace App\Commands\Migration;
 use Phphleb\Migration\Src\MigrateException;
 use Phphleb\Migration\Src\Migration;
 
-class Run extends \Hleb\Scheme\App\Commands\MainTask
+class Rollback extends \Hleb\Scheme\App\Commands\MainTask
 {
-    // php console migration/run
+    // php console migration/rollback [arg]
 
-    const DESCRIPTION = "Running migrations";
+    const DESCRIPTION = "Undo migrations";
 
-    protected function execute(): void
+    protected function execute(string $steps = '1'): void
     {
+        if ($steps === '--all') {
+           $steps = 0;
+        } else {
+           $steps = (int)$steps;
+           if ($steps < 1) {
+               throw new \ErrorException('Argument cannot be less than one!');
+           }
+        }
+
         try {
-            $migrations = (new Migration())->run();
+            $migrations = (new Migration())->rollback($steps);
             if ($migrations) {
-                echo PHP_EOL . ' ✔ ' . implode(PHP_EOL . ' ✔ ', $migrations) . PHP_EOL;
+                echo PHP_EOL . ' |◄ ' . implode(PHP_EOL . ' |◄ ', $migrations) . PHP_EOL;
             }
         } catch (MigrateException $e) {
             exit(PHP_EOL . 'ERROR: ' . $e->getMessage() . PHP_EOL);

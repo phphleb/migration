@@ -100,6 +100,8 @@ class Migration_' . $milliseconds . '_' . $name . ' extends \Phphleb\Migration\S
             $list[(int)$row['label']] = [];
         }
 
+        $dbName = DB::getConfig($this->dbType)['dbname'] ?? null;
+
         $files = scandir($this->directory);
         foreach ($files as $file) {
             if ($file != '.' && $file != '..' && !is_dir($file)) {
@@ -113,7 +115,7 @@ class Migration_' . $milliseconds . '_' . $name . ' extends \Phphleb\Migration\S
                     if ($index && ((is_int($steps) && isset($list[$index])) || !isset($list[$index]))) {
                         require $this->directory . DIRECTORY_SEPARATOR . $file;
                         /** @var  StandardMigration $object */
-                        $object = new $className($this->dbType, $this->tableName, $this->directory);
+                        $object = new $className($this->dbType, $this->tableName, $this->directory, $dbName);
                         if ($type === self::TYPE_UP) {
                             $object->up();
                         } else if ($type === self::TYPE_DOWN) {

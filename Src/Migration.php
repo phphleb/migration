@@ -155,7 +155,7 @@ class Migration_' . $milliseconds . '_' . $name . ' extends \Phphleb\Migration\S
                         $connection->prepare("INSERT INTO {$this->tableName} (label) VALUES (?)")->execute([$item['index']]);
                     }
                 }
-            } catch (\PDOException $e) {
+            } catch (\Throwable $e) {
                 $connection->rollBack();
                 throw $e;
             }

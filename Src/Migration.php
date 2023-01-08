@@ -160,7 +160,9 @@ class Migration_' . $milliseconds . '_' . $name . ' extends \Phphleb\Migration\S
             $connection->commit();
         } else {
             foreach ($list as $item) {
-                $result[] = $item['name'];
+                if ($item['name']) {
+                    $result[] = $item['name'];
+                }
             }
         }
 

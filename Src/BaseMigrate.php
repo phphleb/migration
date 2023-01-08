@@ -6,6 +6,7 @@ namespace Phphleb\Migration\Src;
 
 abstract class BaseMigrate
 {
+
     /** @internal  */
     protected ?string $dbType;
     
@@ -13,7 +14,7 @@ abstract class BaseMigrate
     protected string $tableName;
 
     /** @internal  */
-    protected string $directory;
+    protected ?string $directory;
     
     /** @internal  */
     private array $sql = [];
@@ -23,11 +24,20 @@ abstract class BaseMigrate
      * @param string $tableName
      * @param string $dir
      */
-    public function __construct(string $dbType = null, $tableName = 'migrations', string $dir = HLEB_GLOBAL_DIRECTORY . DIRECTORY_SEPARATOR . 'migrations')
+    public function __construct(?string $dbType = null, $tableName = 'migrations', ?string $dir = null)
     {
         $this->dbType = $dbType;
         $this->tableName = $tableName;
-        $this->directory = rtrim($dir, '\\/ ');
+
+        if (is_null($dir)) {
+            if (file_exists(HLEB_GLOBAL_DIRECTORY . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'migrations')) {
+                $this->directory = HLEB_GLOBAL_DIRECTORY . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'migrations';
+            } else {
+                $this->directory = HLEB_GLOBAL_DIRECTORY . DIRECTORY_SEPARATOR . 'migrations';
+            }
+        } else {
+            $this->directory = rtrim($dir, '\\/ ');
+        }
     }
     
     /** @internal  */

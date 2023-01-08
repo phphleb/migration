@@ -9,6 +9,8 @@ use Hleb\Main\PdoManager;
 
 class Migration extends BaseMigrate
 {
+    private bool $status = false;
+
     public function run(): array
     {
         DB::dbQuery("CREATE TABLE IF NOT EXISTS {$this->tableName} (label bigint NOT NULL, datecreate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP)", $this->dbType);
@@ -32,8 +34,8 @@ class Migration extends BaseMigrate
                     if ($index && !isset($list[$index])) {
                         require $this->directory . DIRECTORY_SEPARATOR . $file;
                         /** @var  BaseMigrate $object */
-                        $object = new $className();
-                        $object->run($this->tableName);
+                        $object = new $className($this->dbType, $this->tableName, $this->directory);
+                        $object->run();
                         $list[$index] = ['sql' => $object->getSql(), 'name' => $className, 'index' => $index];
                     }
                 }
@@ -49,22 +51,28 @@ class Migration extends BaseMigrate
             }
 
         }
-        /** @var PdoManager $connection */
-        $connection = DB::getPdoInstance($this->dbType);
-        try {
-            $connection->beginTransaction();
+        if (!$this->status) {
+            /** @var PdoManager $connection */
+            $connection = DB::getPdoInstance($this->dbType);
+            try {
+                $connection->beginTransaction();
+                foreach ($list as $item) {
+                    $result[] = $item['name'];
+                    foreach ($item['sql'] as $query) {
+                            $connection->prepare($query)->execute();
+                            $connection->prepare("INSERT INTO {$this->tableName} (label) VALUES (?)")->execute([$item['index']]);
+                    }
+                }
+            } catch (\PDOException $e) {
+                $connection->rollBack();
+                throw $e;
+            }
+            $connection->commit();
+        } else {
             foreach ($list as $item) {
                 $result[] = $item['name'];
-                foreach ($item['sql'] as $query) {
-                    $connection->prepare($query)->execute();
-                    $connection->prepare("INSERT INTO {$this->tableName} (label) VALUES (?)")->execute([$item['index']]);
-                }
             }
-        } catch (\PDOException $e) {
-            $connection->rollBack();
-            throw $e;
         }
-        $connection->commit();
 
         return $result;
     }
@@ -108,4 +116,9 @@ class Migration_' . $milliseconds . '_' . $name . ' extends \Phphleb\Migration\S
         return $newFile;
     }
 
+    public function status(): array
+    {
+        $this->status = true;
+        return $this->run();
+    }
 }

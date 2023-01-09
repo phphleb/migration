@@ -34,7 +34,7 @@ class Run extends \Hleb\Scheme\App\Commands\MainTask
     protected function execute(): void
     {
         try {
-            $migrations = (new Migration())->run();
+            $migrations = (new Migration(DB::getPdoInstance()))->run();
             if ($migrations) {
                 echo PHP_EOL . ' ✔ ' . implode(PHP_EOL . ' ✔ ', $migrations) . PHP_EOL;
             }

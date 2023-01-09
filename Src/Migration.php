@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Phphleb\Migration\Src;
 
-use Hleb\Main\DB;
-use Hleb\Main\PdoManager;
+use Throwable;
 
 class Migration extends BaseMigrate
 {
@@ -16,6 +15,7 @@ class Migration extends BaseMigrate
     /**
      * @return array
      * @throws MigrateException
+     * @throws Throwable
      */
     public function run(): array
     {
@@ -26,6 +26,7 @@ class Migration extends BaseMigrate
      * @param int $steps
      * @return array
      * @throws MigrateException
+     * @throws Throwable
      */
     public function rollback(int $steps = 1): array
     {
@@ -35,6 +36,7 @@ class Migration extends BaseMigrate
     /**
      * @return array
      * @throws MigrateException
+     * @throws Throwable
      */
     public function status(): array
     {
@@ -92,15 +94,14 @@ class Migration_' . $milliseconds . '_' . $name . ' extends \Phphleb\Migration\S
 
     private function action(int $type = self::TYPE_UP, ?int $steps = null): array
     {
-        DB::dbQuery("CREATE TABLE IF NOT EXISTS {$this->tableName} (label bigint NOT NULL, datecreate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP)", $this->dbType);
-        $rows = DB::run("SELECT * FROM {$this->tableName} ORDER BY label ASC", [], $this->dbType)->fetchAll(\PDO::FETCH_ASSOC);
+        $this->pdo->exec("CREATE TABLE IF NOT EXISTS {$this->tableName} (label bigint NOT NULL, datecreate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP)");
+        $rows = $this->pdo->prepare("SELECT * FROM {$this->tableName} ORDER BY label ASC")->fetchAll(\PDO::FETCH_ASSOC);
+
         $list = [];
         $result = [];
         foreach ($rows as $key => $row) {
             $list[(int)$row['label']] = [];
         }
-
-        $dbName = DB::getConfig($this->dbType)['dbname'] ?? null;
 
         $files = scandir($this->directory);
         foreach ($files as $file) {
@@ -115,7 +116,7 @@ class Migration_' . $milliseconds . '_' . $name . ' extends \Phphleb\Migration\S
                     if ($index && ((is_int($steps) && isset($list[$index])) || (is_null($steps) && !isset($list[$index])))) {
                         require $this->directory . DIRECTORY_SEPARATOR . $file;
                         /** @var  StandardMigration $object */
-                        $object = new $className($this->dbType, $this->tableName, $this->directory, $dbName);
+                        $object = new $className(null, $this->tableName, $this->directory);
                         if ($type === self::TYPE_UP) {
                             $object->up();
                         } else if ($type === self::TYPE_DOWN) {
@@ -137,29 +138,27 @@ class Migration_' . $milliseconds . '_' . $name . ' extends \Phphleb\Migration\S
         }
 
         if ($type !== self::TYPE_STATUS) {
-            /** @var PdoManager $connection */
-            $connection = DB::getPdoInstance($this->dbType);
             try {
-                $connection->beginTransaction();
+                $this->pdo->beginTransaction();
                 foreach ($list as $item) {
                     if (empty($item['sql'])) {
                         continue;
                     }
                     $result[] = $item['name'];
                     foreach ($item['sql'] as $query) {
-                        $connection->prepare($query)->execute();
+                        $this->pdo->prepare($query)->execute();
                     }
                     if ($type === self::TYPE_DOWN) {
-                        $connection->prepare("DELETE FROM {$this->tableName} WHERE label = ?")->execute([$item['index']]);
+                        $this->pdo->prepare("DELETE FROM {$this->tableName} WHERE label = ?")->execute([$item['index']]);
                     } else {
-                        $connection->prepare("INSERT INTO {$this->tableName} (label) VALUES (?)")->execute([$item['index']]);
+                        $this->pdo->prepare("INSERT INTO {$this->tableName} (label) VALUES (?)")->execute([$item['index']]);
                     }
                 }
-            } catch (\Throwable $e) {
-                $connection->rollBack();
+            } catch (Throwable $e) {
+                $this->pdo->rollBack();
                 throw $e;
             }
-            $connection->commit();
+            $this->pdo->commit();
         } else {
             foreach ($list as $item) {
                 if ($item['name']) {

@@ -112,7 +112,7 @@ class Migration_' . $milliseconds . '_' . $name . ' extends \Phphleb\Migration\S
                         throw new MigrateException("Wrong migration name: $className" );
                     }
                     $index = (int)$parts[1];
-                    if ($index && ((is_int($steps) && isset($list[$index])) || !isset($list[$index]))) {
+                    if ($index && ((is_int($steps) && isset($list[$index])) || (is_null($steps) && !isset($list[$index])))) {
                         require $this->directory . DIRECTORY_SEPARATOR . $file;
                         /** @var  StandardMigration $object */
                         $object = new $className($this->dbType, $this->tableName, $this->directory, $dbName);

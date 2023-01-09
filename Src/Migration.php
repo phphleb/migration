@@ -58,15 +58,15 @@ class Migration extends BaseMigrate
 
 class Migration_' . $milliseconds . '_' . $name . ' extends \Phphleb\Migration\Src\StandardMigration
 {
-   public function up()
-   {
-       $this->addSql(/* ... */);
-   }      
+    public function up()
+    {
+        $this->addSql(/* ... */);
+    }      
    
-   public function down()
-   {
-       // $this->addSql(/* ... */);
-   }  
+    public function down()
+    {
+     // $this->addSql(/* ... */);
+    }  
 }
 ';
 

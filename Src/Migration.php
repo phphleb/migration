@@ -95,7 +95,9 @@ class Migration_' . $milliseconds . '_' . $name . ' extends \Phphleb\Migration\S
     private function action(int $type = self::TYPE_UP, ?int $steps = null): array
     {
         $this->pdo->exec("CREATE TABLE IF NOT EXISTS {$this->tableName} (label bigint NOT NULL, datecreate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP)");
-        $rows = $this->pdo->prepare("SELECT * FROM {$this->tableName} ORDER BY label ASC")->fetchAll(\PDO::FETCH_ASSOC);
+        $statement = $this->pdo->prepare("SELECT * FROM {$this->tableName} ORDER BY label ASC");
+        $statement->execute();
+        $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         $list = [];
         $result = [];

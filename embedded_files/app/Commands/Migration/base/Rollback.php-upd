@@ -21,7 +21,7 @@
 
 namespace App\Commands\Migration;
 
-
+use Hleb\Main\DB;
 use Phphleb\Migration\Src\MigrateException;
 use Phphleb\Migration\Src\Migration;
 

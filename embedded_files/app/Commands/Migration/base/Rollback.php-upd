@@ -35,7 +35,7 @@ class Rollback extends \Hleb\Scheme\App\Commands\MainTask
     {
         $steps = $this->getOption('steps', 1);
 
-        if ($steps === '--all') {
+        if ($steps === 'all') {
            $steps = 0;
         } else {
            $steps = (int)$steps;

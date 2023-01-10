@@ -119,7 +119,6 @@ class Migration_' . $milliseconds . '_' . $name . ' extends \Phphleb\Migration\S
                         if (!class_exists($className, false)) {
                             require $this->directory . DIRECTORY_SEPARATOR . $file;
                         }
-
                         /** @var  StandardMigration $object */
                         $object = new $className(null, $this->tableName, $this->directory);
                         if ($type === self::TYPE_UP) {
@@ -158,6 +157,9 @@ class Migration_' . $milliseconds . '_' . $name . ' extends \Phphleb\Migration\S
                     } else {
                         $this->pdo->prepare("INSERT INTO {$this->tableName} (label) VALUES (?)")->execute([$item['index']]);
                     }
+                }
+                if ($type === self::TYPE_DOWN && $steps === 0) {
+                    $this->pdo->exec("TRUNCATE TABLE {$this->tableName}");
                 }
             } catch (Throwable $e) {
                 $this->pdo->rollBack();

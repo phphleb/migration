@@ -27,12 +27,14 @@ use Phphleb\Migration\Src\Migration;
 
 class Rollback extends \Hleb\Scheme\App\Commands\MainTask
 {
-    // php console migration/rollback [arg]
+    // php console migration/rollback [--steps=1]
 
     const DESCRIPTION = "Undo migrations";
 
-    protected function execute(string $steps = '1'): void
+    protected function execute(): void
     {
+        $steps = $this->getOption('steps', 1);
+
         if ($steps === '--all') {
            $steps = 0;
         } else {

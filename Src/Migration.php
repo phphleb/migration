@@ -116,7 +116,10 @@ class Migration_' . $milliseconds . '_' . $name . ' extends \Phphleb\Migration\S
                     }
                     $index = (int)$parts[1];
                     if ($index && ((is_int($steps) && isset($list[$index])) || (is_null($steps) && !isset($list[$index])))) {
-                        require $this->directory . DIRECTORY_SEPARATOR . $file;
+                        if (!class_exists($className, false)) {
+                            require $this->directory . DIRECTORY_SEPARATOR . $file;
+                        }
+
                         /** @var  StandardMigration $object */
                         $object = new $className(null, $this->tableName, $this->directory);
                         if ($type === self::TYPE_UP) {

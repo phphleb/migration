@@ -35,15 +35,11 @@ class BaseMigrate
     {
         $this->pdo = $pdo;
         $this->tableName = $tableName;
-        if ($dir === null) {
-            $path = realpath(__DIR__ . '/../../../../migrations');
-            if (!$path) {
-                throw new MigrateException('Specify the path to the folder for creating migrations.');
-            }
-            $this->directory = $path;
-        } else {
-            $this->directory = rtrim($dir, '\\/ ');
+        $dir = realpath($dir ? rtrim($dir, '\\/ ') : __DIR__ . '/../../../../migrations');
+        if (!$dir) {
+            throw new MigrateException('Error! Specify the correct path to the folder for storing migrations.');
         }
+        $this->directory = $dir;
     }
 }
 

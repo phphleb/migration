@@ -32,7 +32,7 @@ $ php console migration/create example_name
 
 class Migration_XXX_example_name extends \Phphleb\Migration\Src\StandardMigration
 {
-   public function up()
+   public function up($db)
    {
       $this->addSql("CREATE TABLE table_name (cell_id int)");
    }
@@ -106,4 +106,4 @@ $ composer dump-autoload
 -----------------------------------
 
 
-[![License: MIT](https://img.shields.io/badge/License-MIT%20(Free)-brightgreen.svg)](https://github.com/phphleb/draft/blob/main/LICENSE) ![PHP](https://img.shields.io/badge/PHP-^7.1.0-blue) ![PHP](https://img.shields.io/badge/PHP-8-blue)
+[![License: MIT](https://img.shields.io/badge/License-MIT%20(Free)-brightgreen.svg)](https://github.com/phphleb/draft/blob/main/LICENSE) ![PHP](https://img.shields.io/badge/PHP-^7.4.0-blue) ![PHP](https://img.shields.io/badge/PHP-8-blue)

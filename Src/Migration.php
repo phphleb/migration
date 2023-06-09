@@ -48,7 +48,7 @@ class Migration extends BaseMigrate
      * @return string
      * @throws MigrateException
      */
-    public function create(string $name)
+    public function create(string $name): string
     {
         if (empty($name) || !preg_match('~^[a-z0-9_]*$~i', $name)) {
             throw new MigrateException('Wrong migration name ( A-Za-z0-9_ )');
@@ -58,7 +58,7 @@ class Migration extends BaseMigrate
 
 class Migration_' . $milliseconds . '_' . $name . ' extends \Phphleb\Migration\Src\StandardMigration
 {
-    public function up(): void
+    public function up($db): void
     {
         $this->addSql(/* ... */);
     }      
@@ -122,7 +122,7 @@ class Migration_' . $milliseconds . '_' . $name . ' extends \Phphleb\Migration\S
                         /** @var  StandardMigration $object */
                         $object = new $className(null, $this->tableName, $this->directory);
                         if ($type === self::TYPE_UP) {
-                            $object->up();
+                            $object->up($this->pdo);
                         } else if ($type === self::TYPE_DOWN) {
                             $object->down();
                         }

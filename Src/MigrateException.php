@@ -2,7 +2,7 @@
 
 namespace Phphleb\Migration\Src;
 
-class MigrateException extends \ErrorException
+class MigrateException extends \RuntimeException
 {
 
 }

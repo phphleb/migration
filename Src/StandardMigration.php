@@ -13,7 +13,7 @@ abstract class StandardMigration extends BaseMigrate
      *
      * Метод сбора SQL-запросов для выполнения миграции.
      */
-    abstract public function up();
+    abstract public function up($db);
 
     /**
      * Method for collecting SQL queries for rolling back migration.

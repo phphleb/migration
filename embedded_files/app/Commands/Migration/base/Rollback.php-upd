@@ -45,7 +45,8 @@ class Rollback extends \Hleb\Scheme\App\Commands\MainTask
         }
 
         try {
-            $migrations = (new Migration(DB::getPdoInstance()))->rollback($steps);
+            $dir = HLEB_GLOBAL_DIRECTORY . DIRECTORY_SEPARATOR . 'migrations';
+            $migrations = (new Migration(DB::getPdoInstance(), 'migrations', $dir))->rollback($steps);
             if ($migrations) {
                 echo PHP_EOL . ' |◄ ' . implode(PHP_EOL . ' |◄ ', $migrations) . PHP_EOL;
             }

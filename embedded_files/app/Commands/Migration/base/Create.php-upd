@@ -34,7 +34,8 @@ class Create extends \Hleb\Scheme\App\Commands\MainTask
     protected function execute(string $name): void
      {
          try {
-             $file = (new Migration(DB::getPdoInstance()))->create($name);
+             $dir = HLEB_GLOBAL_DIRECTORY . DIRECTORY_SEPARATOR . 'migrations';
+             $file = (new Migration(DB::getPdoInstance(), 'migrations', $dir))->create($name);
          } catch (MigrateException $e) {
              exit(PHP_EOL . 'ERROR: ' . $e->getMessage() . PHP_EOL);
          }

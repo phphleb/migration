@@ -34,7 +34,8 @@ class Status extends \Hleb\Scheme\App\Commands\MainTask
     protected function execute(): void
     {
         try {
-            $migrations = (new Migration(DB::getPdoInstance()))->status();
+            $dir = HLEB_GLOBAL_DIRECTORY . DIRECTORY_SEPARATOR . 'migrations';
+            $migrations = (new Migration(DB::getPdoInstance(), 'migrations', $dir))->status();
             if ($migrations) {
                for ($i = 0; $i < count($migrations); $i++) {
                   echo PHP_EOL . ($i + 1) . '. ' . $migrations[$i];

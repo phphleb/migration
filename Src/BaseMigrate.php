@@ -7,13 +7,16 @@ namespace Phphleb\Migration\Src;
 class BaseMigrate
 {
     /** @internal  */
-    protected ?object $pdo;
+    protected ?\PDO $pdo;
     
     /** @internal  */
     protected string $tableName;
 
     /** @internal  */
-    protected ?string $directory;
+    protected string $directory;
+
+    /** @internal  */
+    protected bool $notify;
 
     /**
      * Name of the current database.
@@ -22,24 +25,27 @@ class BaseMigrate
     protected ?string $dbName;
 
     /**
-     * @param object|null $pdo    - An initialized PDO object.
+     * @param \PDO|null $pdo - An initialized PDO object.
      *                            - Инициализированный объект PDO.
      *
-     * @param string $tableName   - The name of the table to store migration data.
+     * @param string $tableName - The name of the table to store migration data.
      *                            - Название таблицы для хранения данных миграций.
      *
-     * @param string|null $dir    - Directory for migration files in the project.
+     * @param string $dir         - Directory for migration files in the project.
      *                            - Директория для файлов миграций в проекте.
+     *
+     * @param bool $notify - Display notifications about the actions taken.
+     *                            - Выводить уведомления о произведённых действиях.
      */
-    public function __construct(?object $pdo = null, string $tableName = 'migrations', ?string $dir = null)
+    public function __construct(?\PDO $pdo, string $tableName, string $dir, bool $notify = false)
     {
         $this->pdo = $pdo;
         $this->tableName = $tableName;
-        $dir = realpath($dir ? rtrim($dir, '\\/ ') : __DIR__ . '/../../../../migrations');
-        if (!$dir) {
-            throw new MigrateException('Error! Specify the correct path to the folder for storing migrations.');
+        if (!\file_exists($dir)) {
+            throw new MigrateException("Migrations directory $dir not created! You need to create it.");
         }
-        $this->directory = $dir;
+        $this->directory = \realpath(\rtrim($dir, '\\/ '));
+        $this->notify = $notify;
     }
 }
 

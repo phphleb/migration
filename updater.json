@@ -1,0 +1,13 @@
+{
+  "component": "phphleb/migration",
+  "name": "Implementing database migrations",
+  "description": "Primitive migrations for the HLEB2 framework",
+  "directory": "match-directory",
+  "settings": {
+    "migration": {
+      "name": "migration",
+      "default": "base",
+      "select": ["base"]
+    }
+  }
+}

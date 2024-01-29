@@ -1,6 +1,6 @@
 {
     "name": "phphleb/migration",
-    "description": "Primitive migrations for the HLEB framework",
+    "description": "Primitive migrations for the HLEB2 framework",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -15,7 +15,7 @@
         }
     },
     "require": {
-        "php": ">=7.4.0",
+        "php": ">=8.2.0",
         "ext-readline": "*",
         "phphleb/updater": "*",
         "ext-pdo": "*"

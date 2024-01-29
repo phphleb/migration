@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Phphleb\Migration\Src;
 
 abstract class StandardMigration extends BaseMigrate
@@ -13,7 +15,7 @@ abstract class StandardMigration extends BaseMigrate
      *
      * Метод сбора SQL-запросов для выполнения миграции.
      */
-    abstract public function up($db);
+    abstract public function up(\PDO $db);
 
     /**
      * Method for collecting SQL queries for rolling back migration.

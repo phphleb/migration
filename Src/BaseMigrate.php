@@ -48,4 +48,3 @@ class BaseMigrate
         $this->notify = $notify;
     }
 }
-

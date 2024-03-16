@@ -179,17 +179,16 @@ class Migration_' . $milliseconds . '_' . $name . ' extends \Phphleb\Migration\S
 
         } else {
             foreach ($list as $item) {
-                if ($item['name']) {
+                if ($item['name'] ?? null) {
                     $result[] = $item['name'];
                 }
             }
         }
-        if (!$result && $this->notify) {
-            if ($type === self::TYPE_UP) {
-                echo 'No migrations found to run.' . PHP_EOL;
-            }
-            if ($type === self::TYPE_DOWN) {
+        if (!$result) {
+            if  ($type === self::TYPE_DOWN) {
                 echo 'No migrations found to rollback.' . PHP_EOL;
+            } else {
+                echo 'No migrations found to run.' . PHP_EOL;
             }
         }
 

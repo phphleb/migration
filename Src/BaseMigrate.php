@@ -26,16 +26,16 @@ class BaseMigrate
 
     /**
      * @param \PDO|null $pdo - An initialized PDO object.
-     *                            - Инициализированный объект PDO.
+     *                       - Инициализированный объект PDO.
      *
      * @param string $tableName - The name of the table to store migration data.
-     *                            - Название таблицы для хранения данных миграций.
+     *                          - Название таблицы для хранения данных миграций.
      *
      * @param string $dir         - Directory for migration files in the project.
      *                            - Директория для файлов миграций в проекте.
      *
      * @param bool $notify - Display notifications about the actions taken.
-     *                            - Выводить уведомления о произведённых действиях.
+     *                     - Выводить уведомления о произведённых действиях.
      */
     public function __construct(?\PDO $pdo, string $tableName, string $dir, bool $notify = false)
     {

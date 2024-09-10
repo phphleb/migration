@@ -118,11 +118,6 @@ class Migration_' . $milliseconds . '_' . $name . ' extends \Phphleb\Migration\S
                         if (!\class_exists($className, false)) {
                             require $this->directory . DIRECTORY_SEPARATOR . $file;
                         }
-                        // If execution is out of order, an error is thrown.
-                        // Если выполнение происходит не по порядку, то выводится ошибка.
-                        if ($type === self::TYPE_UP && $list && \max(\array_keys($list)) >= $index) {
-                            throw new MigrateException("An index $index or higher already exists in the migrations table.");
-                        }
                         /** @var  StandardMigration $object */
                         $object = new $className(null, $this->tableName, $this->directory);
                         $this->pdo->beginTransaction();

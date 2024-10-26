@@ -2,6 +2,10 @@
     "name": "phphleb/migration",
     "description": "Primitive migrations for the HLEB2 framework",
     "type": "library",
+    "keywords": [
+        "migration",
+        "php"
+    ],
     "license": "MIT",
     "authors": [
         {

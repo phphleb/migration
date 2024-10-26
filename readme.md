@@ -1,36 +1,33 @@
-# Базовые миграции для фреймворка HLEB2
-
+# Basic migrations
 
 [![HLEB2](https://img.shields.io/badge/HLEB-2-darkcyan)](https://github.com/phphleb/hleb) ![PHP](https://img.shields.io/badge/PHP-^8.2-blue) [![License: MIT](https://img.shields.io/badge/License-MIT%20(Free)-brightgreen.svg)](https://github.com/phphleb/hleb/blob/master/LICENSE)
 
+Basic migrations for the [HLEB2](https://github.com/phphleb/hleb) PHP framework.
 
-Эти миграции реализуют минимальный набор стандартных действий, основное их предназначение - выполнить заготовленные запросы и зафиксировать в базе данных факт их выполнения, предотвращая повторное.
-Для этого во фреймворке должна быть подключена база данных.
 
-Поддержка  __MySQL__ / __MariaDB__ / __PostgreSQL__
+These migrations implement a minimal set of standard actions, their main purpose is to execute prepared queries and record their execution in the database, preventing repetition.
+To achieve this, the framework must be connected to a database.
 
-#### Установка
+Support for __MySQL__ / __MariaDB__ / __PostgreSQL__
+
+#### Installation
 ```bash
 composer require phphleb/migration
 ```
-#### Развертывание
+#### Deployment (when using the HLEB2 framework)
 ```bash
 php console phphleb/migration add
 ```
 
-#### Использование
-Далее можно создать шаблон миграции при помощи консольной команды:
+#### Usage
+Next, you can create a migration template using the console command:
 ```bash
 php console migration/create example_name
 ```
 
-Эта команда создаст в папке `database/migrations` (или `migrations` при её отсутствии) проекта новую миграцию с именем 'Migration_XXX_example_name.php' (где индекс ХХХ - текущее UNIX-время в миллисекундах). Если папки `database/migrations` или `migrations` нет в
-корневой директории проекта, то нужно создать её вручную. Если эта папка вас не устраивает, нужно будет переписать классы консольных команд с указанием директории
-и использовать собственные, развертывание библиотеки при этом можно не применять. Но если используется одна база данных, этих двух вариантов расположения должно хватить (должен использоваться только один из них).
+This command will create a new migration in the project's `database/migrations` (or migrations if it doesn't exist) folder with the name 'MigrationXXXexamplename.php' (where XXX index is the current UNIX time in milliseconds). If the `database/migrations` or `migrations` folder is not in the project root directory, you need to create it manually. If this folder is not suitable for you, you will need to rewrite the console command classes specifying the directory and use your own; deployment of the library in this case is optional. However, if a single database is used, these two location options should suffice (only one of them should be used).
 
-В классе 'Migration_XXX_example_name' файла миграции есть метод **up**(), в который можно добавить один или более SQL-запросов с помощью метода **addSql**(...). Аналогичным
-образом в методе **down**() содержатся запросы, которые откатывают выполнение метода **up**(). С откатом миграций нужно быть осторожным, многие его не используют,
-но если он обязателен в проекте, нужно следить за его актуальностью.
+In the 'MigrationXXXexamplename' class of the migration file, there is an up() method where one or more SQL queries can be added using the **addS**ql(...) method. Similarly, the **down**() method contains queries that roll back the **up**() method's execution. Be cautious with rolling back migrations, many do not use it, but if it is mandatory for the project, you must keep it up to date.
 
 ```php
 <?php
@@ -51,50 +48,44 @@ class Migration_XXX_example_name extends \Phphleb\Migration\Src\StandardMigratio
 
 
 ```
-Важной особенностью метода **up** является обязательное наличие как минимум одного исполняемого действия $this->addSql(...);
+An important feature of the **up** method is the obligatory presence of at least one executable action $this->addSql(...);
 
-Также есть команда для выполнения миграций:
+There is also a command to run migrations:
 
 ```bash
 php console migration/run --no-notify
 ```
 
-Выполнит все незафиксированные миграции (ранее не выполненные) и зафиксирует их в таблице `migrations` базы данных, последняя указана в настройках проекта (конфигурации БД) как основная. 
-Соответственно, все SQL-запросы миграций могут быть выполнены только к этой БД. 
-Если убрать --no-notify, то будут выведены подробности выполнения команды.
+It will execute all unrecorded migrations (previously not executed) and record them in the migrations table of the database, which is specified in the project settings (DB configuration) as the main one. Accordingly, all migration SQL queries can only be executed on this database. If you remove `--no-notify`, the command execution details will be displayed.
 
-_Для второстепенной базы данных из конфигурации фреймворка также можно дополнительно создать свои консольные
-команды (**create**, **rollback**, **run** и **status**) с указанием конкретного названия подключения из конфигурации БД. Например: `new Migration(DB::getPdoInstance("mysql.other-name"), "other_migrations_table", "other_migrations_path")`.
- А если вариантов несколько, то можно передавать их в виде аргумента, не создавая для каждой отдельные консольные команды. Для разных вариантов подключения нужно указать и разные таблицы хранения, а также папки, как в примере._
+For a secondary database from the framework's configuration, you can also additionally create your own console commands (create, rollback, run, and status) specifying the specific connection name from the DB configuration. For example: `new Migration(DB::getPdoInstance("mysql.other-name"), "other-migrations-table-name", "other/migrations/path")`. If there are several options, you can pass them as an argument without creating separate console commands for each. For different connection options, you need to specify different storage tables and folders, as in the example.
 
-Перед выполнением миграций эта команда поможет уточнить список незафиксированных миграций в проекте, не выполняя сами миграции:
+Before running migrations, this command will help to clarify the list of unrecorded migrations in the project without performing the migrations themselves:
 
 ```bash
 php console migration/status
 ```
 
-Следующая команда предназначена для отката миграций. Если при выполнении использовались запросы из метода **up**(), то теперь выполнятся из метода **down**(). Порядок выполнения
-миграций будет в обратном порядке, то есть сначала выполнится последняя зафиксированная, потом предпоследняя и тд. Если указать число в виде аргумента команды, то на это количество миграций произойдёт откат.
-По умолчанию (без аргумента) на одну. Если нужно откатить все миграции, то нужно аргументом указать 'all', будет применено ко всем _существующим_ миграциям c очисткой таблицы с ними в БД.
+The following command is intended for rolling back migrations. If queries from the **up**() method were executed during execution, then queries from the **down**() method will now be executed. The order of execution of migrations will be reversed, i.e., the last recorded one will be executed first, then the second-to-last, and so on. If a number is specified as a command argument, the rollback will occur for that number of migrations. By default (without an argument), it will roll back one migration. If you need to roll back all migrations, you need to specify 'all' as an argument, and it will be applied to all existing migrations with the cleaning of the corresponding table in the database.
 
 ```bash
 php console migration/rollback all --no-notify
 ```
 
-При выполнении указанной команды будет произведён откат всех миграций. Отсчет идёт с зафиксированных миграций, уже выполненных. Если необходимо откатить только несколько миграций, например две последние:
+When this command is executed, all migrations will be rolled back. Counting starts from the recorded migrations that have already been executed. If you need to roll back only a few migrations, for example, the last two:
+
 
 ```bash
 php console migration/rollback 2
 ```
 
 
-_В случае, если вы хотите добавить миграции на уже существующий проект с базой данных некоторого размера, создайте первую миграцию из дампа структуры этой БД, 
-добавив к созданию таблиц выражение 'IF NOT EXISTS', после чего выполните миграции._
+_If you want to add migrations to an already existing project with a database of a certain size, create the first migration from the dump of this DB's structure, adding the `IF NOT EXISTS` expression to the creation of tables, and then execute the migrations._
 
-#### Произвольная установка
+#### Arbitrary Setup
 
-Присутствует возможность использовать этот механизм миграций вне фреймворка HLEB2, а в любом PHP-проекте. Принцип подключения можно найти в консольных
-командах этой библиотеки, подключение там реализовано так:
+There is an option to use this migration mechanism outside the HLEB2 framework, in any PHP project. The connection principle can be found in the console commands of this library; the connection is implemented there as follows:
+
 
 ```php
 use Hleb\Static\DB;
@@ -104,10 +95,9 @@ use Phphleb\Migration\Src\Migration;
 
 ```
 
-где первым аргументом конструктора класса Migration подаётся инициализированный объект PDO, вторым - название таблицы для сохранения данных миграций (по умолчанию 'migrations'),
-а третьим полный путь к папке для хранения файлов миграций. Достаточно реализовать подобные консольные команды с подстановкой собственных аргументов.
+where the first argument in the Migration class constructor is the initialized PDO object, the second is the name of the table for storing migration data (default is 'migrations'), and the third is the full path to the folder for storing migration files. It is sufficient to implement similar console commands with your own arguments substituted.
 
-#### Обновление
+#### Update
 
 ```bash
 composer update phphleb/migration
